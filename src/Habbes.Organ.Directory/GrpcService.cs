@@ -40,7 +40,7 @@ namespace Habbes.Organ.Directory
             var channel = tracker.GetChannel(request.ChannelId);
             var response = new GetChannelResponse()
             {
-                ServerLocation =
+                ServerLocation = new ServerLocation()
                 {
                     Uri = channel.Peer.Host,
                     Port = channel.Peer.Port

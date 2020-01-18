@@ -30,9 +30,11 @@ namespace Habbes.Organ.SampleApp2
             await peer.ConnectDirectory("localhost", 50051);
 
             var numbers = await peer.GetChannel("numbers");
-            long lastIndex = 0;
+            long fromIndex = 0;
+            long toIndex = 0;
             while (true)
             {
+                toIndex = fromIndex + 2;
                 lock (terminateLock)
                 {
                     if (shouldTerminate)
@@ -42,8 +44,9 @@ namespace Habbes.Organ.SampleApp2
                         break;
                     }
                 }
-
-                var result = await numbers.Get(lastIndex, lastIndex + 2);
+                
+                var result = await numbers.Get(fromIndex, toIndex);
+                fromIndex = toIndex;
                 foreach (var message in result)
                 {
                     var content = message.Content;

@@ -17,6 +17,7 @@ namespace Habbes.Organ.Directory
                 Port = port
             };
             peers.Add(peer.Id, peer);
+            Console.WriteLine($"Added peer {port}:{host}, id {peer.Id}");
             return peer;
         }
 
@@ -34,12 +35,15 @@ namespace Habbes.Organ.Directory
                 Peer = peer
             };
             channels.Add(channelId, channel);
+            Console.WriteLine($"Added channel {channelId}, {channel.Peer.Id}");
             return channel;
         }
 
         public Channel GetChannel(string channelId)
         {
-            return channels[channelId];
+            var channel = channels[channelId];
+            Console.WriteLine($"Getting channel {channelId} {channel.Peer.Id}");
+            return channel;
         }
     }
 }

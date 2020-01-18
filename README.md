@@ -23,7 +23,19 @@ Run Consumer peer:
 dotnet run -p src/Habbes.Organ.SampleApp2
 ```
 
-## PoC 1 To-Do
+## Proof-of-Concept milestone
+
+The first PoC will implement a basic version demonstrating the basic
+features of the peer-to-peer, (near) real-time stream-processing system.
+This version will not provide support persistence.
+
+The system will include a library that
+can be used by peer applications to host channels and expose
+them to other peers, as well as reading from and writing to channels.
+The system will also include a Directory server that tracks current
+peers and channels.
+
+### To-do list:
 
 - [ ] Error-handling
 - [ ] Standardize gRPC response messages (errors, success flags)

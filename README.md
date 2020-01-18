@@ -1,6 +1,6 @@
 # Organ
 
-Implementation of Persistent Temporal Streams.
+Implementation of [Persistent Temporal Streams](https://dl.acm.org/doi/10.5555/1656980.1657003).
 
 ## Quick demo
 

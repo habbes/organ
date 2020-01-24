@@ -8,13 +8,16 @@ namespace Habbes.Organ.Host
     public class LocalChannel: IChannel
     {
         private readonly List<IMessage> messages = new List<IMessage>();
+        private long mostRecentTimestamp = long.MinValue;
 
-        public LocalChannel(string id)
+        public LocalChannel(string id, long currencyWindow = 10)
         {
-            this.Id = id;
+            Id = id;
+            CurrencyWindow = currencyWindow;
         }
         
         public string Id { get; }
+        public long CurrencyWindow { get; private set; }
 
         public Task<IEnumerable<IMessage>> Get(long from, long to)
         {
@@ -25,6 +28,8 @@ namespace Habbes.Organ.Host
         public Task Put(IMessage message)
         {
             messages.Add(message);
+            if (message.Timestamp > mostRecentTimestamp) mostRecentTimestamp = message.Timestamp;
+            DeleteOldest();
             return Task.CompletedTask;
         }
 
@@ -36,6 +41,13 @@ namespace Habbes.Organ.Host
                 Content = body
             };
             return Put(message);
+        }
+
+        private void DeleteOldest()
+        {
+            var lastAccepted = mostRecentTimestamp - CurrencyWindow;
+            var removed = messages.RemoveAll(m => m.Timestamp < lastAccepted);
+            Console.WriteLine($"Removed {removed} elements");
         }
     }
 }

@@ -21,9 +21,9 @@ namespace Habbes.Organ.Host
             this.port = port;
         }
 
-        public async Task<IChannel> CreateChannel(string channelId)
+        public async Task<IChannel> CreateChannel(string channelId, long currencyWindow = 10)
         {
-            var channel = new LocalChannel(channelId);
+            var channel = new LocalChannel(channelId, currencyWindow);
             var request = new RegisterChannelRequest()
             {
                 ChannelId = channelId,
@@ -41,7 +41,7 @@ namespace Habbes.Organ.Host
             {
                 return channel;
             }
-            var request = new GetChannelRequest() { ChannelId =  channelId };
+            var request = new GetChannelRequest() { ChannelId = channelId };
             var response = await directory.GetChannelAsync(request);
             var peerConnection = new grpc.Channel(response.ServerLocation.Uri, response.ServerLocation.Port, grpc.ChannelCredentials.Insecure);
             var remotePeerClient = new PeerService.PeerServiceClient(peerConnection);

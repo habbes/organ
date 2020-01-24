@@ -45,5 +45,5 @@ peers and channels.
 - [ ] Clean up and refactor code (e.g. proper logging instead of `Console.WriteLine()`)
 - [ ] Create classes to encapsulate and hide gRPC stuff (e.g. instead of expose gRPC client to the rest of the code, use wrapper classes and transport-agnostic interfaces)
 - [ ] OData service to query system info from directory (e.g. current peers, channels, etc.)
-- [ ] Proper handling of current requests (reads/writes) to channels
+- [ ] Proper handling of requests (reads/writes) to channels concurrently
 - [ ] Peer that only consumes from other channels should not need to start a server.

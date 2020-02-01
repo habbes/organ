@@ -7,14 +7,13 @@ namespace Habbes.Organ.Host
 {
     public class Peer
     {
-        private string id;
         private readonly ChannelContainer channels = new ChannelContainer();
-        private DirectoryService.DirectoryServiceClient directory;
+        private IDirectory directory;
         private string host;
         private int port;
         private grpc.Server server;
 
-        public string Id => id;
+        public string Id { get; private set; }
         public Peer(string host, int port)
         {
             this.host = host;
@@ -24,12 +23,7 @@ namespace Habbes.Organ.Host
         public async Task<IChannel> CreateChannel(string channelId, long currencyWindow = 10)
         {
             var channel = new LocalChannel(channelId, currencyWindow);
-            var request = new RegisterChannelRequest()
-            {
-                ChannelId = channelId,
-                PeerdId = id
-            };
-            await directory.RegisterChannelAsync(request);
+            await directory.RegisterChannel(Id, channelId);
             channels.AddChannel(channel);
             return channel;
         }
@@ -41,10 +35,8 @@ namespace Habbes.Organ.Host
             {
                 return channel;
             }
-            var request = new GetChannelRequest() { ChannelId = channelId };
-            var response = await directory.GetChannelAsync(request);
-            var peerConnection = new grpc.Channel(response.ServerLocation.Uri, response.ServerLocation.Port, grpc.ChannelCredentials.Insecure);
-            var remotePeerClient = new PeerService.PeerServiceClient(peerConnection);
+            var location = await directory.GetChannelLocation(channelId);
+            var remotePeerClient = new RemotePeer(location.Host, location.Port);
             
             channel = new RemoteChannel(channelId, remotePeerClient);
             channels.AddChannel(channel);
@@ -68,18 +60,8 @@ namespace Habbes.Organ.Host
 
         public async Task ConnectDirectory(string directoryHost, int directoryPort)
         {
-            var channel = new grpc.Channel(directoryHost, directoryPort, grpc.ChannelCredentials.Insecure);
-            directory = new DirectoryService.DirectoryServiceClient(channel);
-            var request = new RegisterPeerRequest()
-            {
-                ServerLocation = new ServerLocation()
-                {
-                    Uri = host,
-                    Port = port
-                }
-            };
-            var response = await directory.RegisterPeerAsync(request);
-            id = response.PeerId;
+            directory = new Directory(directoryHost, directoryPort);
+            Id = await directory.RegisterPeer(host, port);
         }
 
     }

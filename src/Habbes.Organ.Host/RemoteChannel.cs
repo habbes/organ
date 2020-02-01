@@ -9,9 +9,9 @@ namespace Habbes.Organ.Host
 {
     public class RemoteChannel: IChannel
     {
-        private readonly PeerService.PeerServiceClient client;
+        private IRemotePeer client;
 
-        public RemoteChannel(string id, PeerService.PeerServiceClient client)
+        public RemoteChannel(string id, IRemotePeer client)
         {
             this.client = client;
             Id = id;
@@ -21,30 +21,13 @@ namespace Habbes.Organ.Host
 
         public async Task<IEnumerable<IMessage>> Get(long from, long to)
         {
-            var request = new GetRequest()
-            {
-                Channel = Id,
-                From = from,
-                To = to,
-            };
-            var response = await this.client.GetAsync(request);
-            return response.Messages.Select(m =>
-                new Message()
-                {
-                    Timestamp = m.Timestamp,
-                    Content = m.Message.ToByteArray()
-                }
-            );
+            var messages = await client.GetFromChannel(Id, from, to);
+            return messages;
         }
 
         public async Task Put(IMessage message)
         {
-            var request = new PutRequest()
-            {
-                Channel = Id,
-                Message = ByteString.CopyFrom(message.Content)
-            };
-            await this.client.PutAsync(request);
+            await client.PutToChannel(Id, message);
         }
     }
 }

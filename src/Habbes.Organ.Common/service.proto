@@ -20,7 +20,7 @@ message PutRequest {
 }
 
 message PutResponse {
-    bool ok = 1;
+    ResponseStatus responseStatus = 1;
 }
 
 message GetRequest {
@@ -30,7 +30,7 @@ message GetRequest {
 }
 
 message GetResponse {
-    bool ok = 1;
+    ResponseStatus responseStatus = 1;
     repeated ChannelMessage messages = 2;
 }
 
@@ -44,7 +44,7 @@ message RegisterPeerRequest {
 }
 
 message RegisterPeerResponse {
-    bool ok = 1;
+    ResponseStatus responseStatus = 1;
     string peerId = 2;
 }
 
@@ -54,7 +54,7 @@ message RegisterChannelRequest {
 }
 
 message RegisterChannelResponse {
-    bool ok = 1;
+    ResponseStatus responseStatus = 1;
 }
 
 message GetChannelRequest {
@@ -62,10 +62,16 @@ message GetChannelRequest {
 }
 
 message GetChannelResponse {
-    ServerLocation serverLocation = 1;
+    ResponseStatus responseStatus = 1;
+    ServerLocation serverLocation = 2;
 }
 
 message ServerLocation {
     string uri = 1;
     int32 port = 2;
+}
+
+message ResponseStatus {
+    bool ok = 1;
+    string errorMessage = 2;
 }

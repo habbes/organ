@@ -19,7 +19,7 @@ namespace Habbes.Organ.Directory
             var peer = tracker.AddPeer(request.ServerLocation.Uri, request.ServerLocation.Port);
             var response = new RegisterPeerResponse()
             {
-                Ok = true,
+                ResponseStatus = ResponseHelpers.CreateOkStatus(),
                 PeerId = peer.Id
             };
             return Task.FromResult(response);
@@ -30,7 +30,7 @@ namespace Habbes.Organ.Directory
             var channel = tracker.AddChannel(request.PeerdId, request.ChannelId);
             var response = new RegisterChannelResponse()
             {
-                Ok = true
+                ResponseStatus = ResponseHelpers.CreateOkStatus()
             };
             return Task.FromResult(response);
         }
@@ -40,6 +40,7 @@ namespace Habbes.Organ.Directory
             var channel = tracker.GetChannel(request.ChannelId);
             var response = new GetChannelResponse()
             {
+                ResponseStatus = ResponseHelpers.CreateOkStatus(),
                 ServerLocation = new ServerLocation()
                 {
                     Uri = channel.Peer.Host,

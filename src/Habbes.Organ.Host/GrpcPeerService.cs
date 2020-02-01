@@ -24,7 +24,7 @@ namespace Habbes.Organ.Host
                 Content = request.Message.ToByteArray()
             };
             await channel.Put(message);
-            var response = new PutResponse() { Ok = true };
+            var response = new PutResponse() { ResponseStatus = ResponseHelpers.CreateOkStatus() };
             return response;
         }
 
@@ -32,7 +32,7 @@ namespace Habbes.Organ.Host
         {
             var channel = channels.GetChannel(request.Channel);
             var messages = await channel.Get(request.From, request.To);
-            var response = new GetResponse() { Ok = true };
+            var response = new GetResponse() { ResponseStatus = ResponseHelpers.CreateOkStatus() };
             foreach (var message in messages)
             {
                 response.Messages.Add(new ChannelMessage()

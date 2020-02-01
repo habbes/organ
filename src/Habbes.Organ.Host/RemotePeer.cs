@@ -17,7 +17,7 @@ namespace Habbes.Organ.Host
         }
 
 
-        public async Task<IEnumerable<IMessage>> GetFromChannel(string channelId, long @from, long to)
+        public async Task<IEnumerable<IMessage>> GetFromChannel(string channelId, long from, long to)
         {
             var request = new GetRequest()
             {

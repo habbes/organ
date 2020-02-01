@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using grpc = Grpc.Core;
-using Habbes.Organ;
 
 namespace Habbes.Organ.Host
 {
@@ -11,7 +9,7 @@ namespace Habbes.Organ.Host
         private IDirectory directory;
         private string host;
         private int port;
-        private grpc.Server server;
+        private Server server;
 
         public string Id { get; private set; }
         public Peer(string host, int port)
@@ -45,17 +43,13 @@ namespace Habbes.Organ.Host
 
         public void StartServer()
         {
-            server = new grpc.Server()
-            {
-                Services = { PeerService.BindService(new GrpcPeerService(channels)) },
-                Ports = { new grpc.ServerPort(host, port, grpc.ServerCredentials.Insecure) }
-            };
+            server = new Server(host, port, channels);
             server.Start();
         }
 
         public Task StopServer()
         {
-            return server.ShutdownAsync();
+            return server.Stop();
         }
 
         public async Task ConnectDirectory(string directoryHost, int directoryPort)
